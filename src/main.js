@@ -11,7 +11,10 @@ import {
   orderBy
 } from 'firebase/firestore'
 
-const PASSWORD = 'kotimatu1212'
+const USER_PASSWORD = 'kotimatu1212'
+const ADMIN_PASSWORD = 'kotimatu1212admin'
+
+let isAdmin = false
 
 let currentThreadId = null
 
@@ -47,12 +50,21 @@ document
         'passwordInput'
       ).value
 
-    if (input !== PASSWORD) {
+    if (
+  input !== USER_PASSWORD &&
+  input !== ADMIN_PASSWORD
+) {
 
-      alert('パスワードが違います')
+  alert('パスワードが違います')
 
-      return
-    }
+  return
+}
+
+if (
+  input === ADMIN_PASSWORD
+) {
+  isAdmin = true
+}
 
     document.getElementById(
       'loginArea'
@@ -73,6 +85,18 @@ function renderBBS() {
   ).innerHTML = `
 
 <h1>2chzezehighschool</h1>
+
+${isAdmin
+? `
+<div style="
+color:red;
+font-weight:bold;
+margin-bottom:10px;
+">
+管理者モード
+</div>
+`
+: ''}
 
 <input
   id="threadTitle"
