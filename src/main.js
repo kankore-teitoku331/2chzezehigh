@@ -8,9 +8,10 @@ import {
   getDocs,
   query,
   where,
-  orderBy
+  orderBy,
+  deleteDoc,
+  doc
 } from 'firebase/firestore'
-
 const USER_PASSWORD = 'kotimatu1212'
 const ADMIN_PASSWORD = 'kotimatu1212admin'
 
@@ -175,8 +176,15 @@ function setupBBS() {
       div.style.cursor =
         'pointer'
 
-      div.textContent =
-        data.title
+      div.innerHTML = `
+  ${data.title}
+
+  ${
+    isAdmin
+      ? '<button style="float:right">削除</button>'
+      : ''
+  }
+`
 
       div.onclick = () => {
 
@@ -357,5 +365,27 @@ function setupBBS() {
         await loadResponses()
       })
 
+  window.deleteThread =
+async function(id){
+
+  if(
+    !confirm(
+      'スレッドを削除しますか？'
+    )
+  ){
+    return
+  }
+
+  await deleteDoc(
+    doc(
+      db,
+      'threads',
+      id
+    )
+  )
+
   loadThreads()
+}
+
+loadThreads()
 }
