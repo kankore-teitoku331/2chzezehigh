@@ -3,34 +3,28 @@ import './style.css'
 import { db } from './firebase'
 
 import {
-collection,
-addDoc,
-getDocs,
-query,
-where,
-orderBy,
-deleteDoc,
-doc
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy
 } from 'firebase/firestore'
 
-const USER_PASSWORD = 'kotimatu1212'
-const ADMIN_PASSWORD = 'kotimatu1212admin'
+const PASSWORD = 'kotimatu1212'
 
 let currentThreadId = null
-let isAdmin = false
 
 document.querySelector('#app').innerHTML = `
-
 <div id="loginArea">
 
   <h1>某Z高校裏サイト</h1>
 
-<input
-id="passwordInput"
-type="password"
-placeholder="パスワード"
-
->
+  <input
+    id="passwordInput"
+    type="password"
+    placeholder="パスワード"
+  >
 
   <button id="loginButton">
     入室
@@ -45,59 +39,44 @@ placeholder="パスワード"
 `
 
 document
-.getElementById('loginButton')
-.addEventListener('click', () => {
+  .getElementById('loginButton')
+  .addEventListener('click', () => {
 
-```
-const input =
-  document.getElementById(
-    'passwordInput'
-  ).value
+    const input =
+      document.getElementById(
+        'passwordInput'
+      ).value
 
-if (
-  input !== USER_PASSWORD &&
-  input !== ADMIN_PASSWORD
-) {
-  alert('パスワードが違います')
-  return
-}
+    if (input !== PASSWORD) {
 
-if (
-  input === ADMIN_PASSWORD
-) {
-  isAdmin = true
-}
+      alert('パスワードが違います')
 
-document.getElementById(
-  'loginArea'
-).style.display = 'none'
+      return
+    }
 
-document.getElementById(
-  'bbsArea'
-).style.display = 'block'
+    document.getElementById(
+      'loginArea'
+    ).style.display = 'none'
 
-renderBBS()
-setupBBS()
-```
+    document.getElementById(
+      'bbsArea'
+    ).style.display = 'block'
 
-})
+    renderBBS()
+    setupBBS()
+  })
 
 function renderBBS() {
 
-document.getElementById(
-'bbsArea'
-).innerHTML = `
+  document.getElementById(
+    'bbsArea'
+  ).innerHTML = `
 
 <h1>2chzezehighschool</h1>
 
-${isAdmin
-? '<div style="color:red;font-weight:bold;">管理者モード</div><br>'
-: ''}
-
 <input
-id="threadTitle"
-placeholder="スレッドタイトル"
-
+  id="threadTitle"
+  placeholder="スレッドタイトル"
 >
 
 <button id="createThread">
@@ -121,9 +100,8 @@ placeholder="スレッドタイトル"
 <br>
 
 <input
-id="responseText"
-placeholder="レスを書く"
-
+  id="responseText"
+  placeholder="レスを書く"
 >
 
 <button id="sendResponse">
@@ -138,312 +116,222 @@ placeholder="レスを書く"
 
 function setupBBS() {
 
-async function loadThreads() {
+  async function loadThreads() {
 
-```
-const q = query(
-  collection(db, 'threads'),
-  orderBy(
-    'createdAt',
-    'desc'
-  )
-)
-
-const snapshot =
-  await getDocs(q)
-
-const threadList =
-  document.getElementById(
-    'threadList'
-  )
-
-threadList.innerHTML = ''
-
-snapshot.forEach((threadDoc) => {
-
-  const data =
-    threadDoc.data()
-
-  const div =
-    document.createElement('div')
-
-  div.style.padding = '10px'
-  div.style.margin = '5px'
-  div.style.border =
-    '1px solid gray'
-  div.style.cursor =
-    'pointer'
-
-  div.innerHTML = `
-    ${data.title}
-
-    ${isAdmin
-    ? `
-      <button
-        style="float:right"
-        onclick="deleteThread('${threadDoc.id}')"
-      >
-        削除
-      </button>
-    `
-    : ''}
-  `
-
-  div.onclick = () => {
-
-    currentThreadId =
-      threadDoc.id
-
-    document.getElementById(
-      'selectedThread'
-    ).textContent =
-      data.title
-
-    loadResponses()
-  }
-
-  threadList.appendChild(div)
-})
-```
-
-}
-
-async function loadResponses() {
-
-```
-if (!currentThreadId) return
-
-const q = query(
-  collection(db, 'responses'),
-  where(
-    'threadId',
-    '==',
-    currentThreadId
-  ),
-  orderBy(
-    'createdAt',
-    'desc'
-  )
-)
-
-const snapshot =
-  await getDocs(q)
-
-const responses =
-  document.getElementById(
-    'responses'
-  )
-
-responses.innerHTML = ''
-
-let number = 1
-
-snapshot.forEach((responseDoc) => {
-
-  const data =
-    responseDoc.data()
-
-  const date =
-    new Date(
-      data.createdAt
+    const q = query(
+      collection(db, 'threads'),
+      orderBy(
+        'createdAt',
+        'desc'
+      )
     )
 
-  responses.innerHTML += `
-    <div style="
-      border-bottom:1px solid #ccc;
-      padding:8px;
-    ">
+    const snapshot =
+      await getDocs(q)
 
-      <b>
-        ${number}
-        名前：
-        ${data.name || '名無し'}
-      </b>
+    const threadList =
+      document.getElementById(
+        'threadList'
+      )
 
-      ${isAdmin
-      ? `
-        <button
-          style="float:right"
-          onclick="deleteResponse('${responseDoc.id}')"
-        >
-          削除
-        </button>
+    threadList.innerHTML = ''
+
+    snapshot.forEach((threadDoc) => {
+
+      const data =
+        threadDoc.data()
+
+      const div =
+        document.createElement('div')
+
+      div.style.padding = '10px'
+      div.style.margin = '5px'
+      div.style.border =
+        '1px solid gray'
+      div.style.cursor =
+        'pointer'
+
+      div.textContent =
+        data.title
+
+      div.onclick = () => {
+
+        currentThreadId =
+          threadDoc.id
+
+        document.getElementById(
+          'selectedThread'
+        ).textContent =
+          data.title
+
+        loadResponses()
+      }
+
+      threadList.appendChild(div)
+    })
+  }
+
+  async function loadResponses() {
+
+    if (!currentThreadId) return
+
+    const q = query(
+      collection(db, 'responses'),
+      where(
+        'threadId',
+        '==',
+        currentThreadId
+      ),
+      orderBy(
+        'createdAt',
+        'desc'
+      )
+    )
+
+    const snapshot =
+      await getDocs(q)
+
+    const responses =
+      document.getElementById(
+        'responses'
+      )
+
+    responses.innerHTML = ''
+
+    let number = 1
+
+    snapshot.forEach((responseDoc) => {
+
+      const data =
+        responseDoc.data()
+
+      const date =
+        new Date(
+          data.createdAt
+        )
+
+      responses.innerHTML += `
+        <div style="
+          border-bottom:1px solid #ccc;
+          padding:8px;
+        ">
+
+          <b>
+            ${number}
+            名前：
+            ${data.name || '名無し'}
+          </b>
+
+          <br>
+
+          <small>
+            ${date.toLocaleString()}
+          </small>
+
+          <br><br>
+
+          ${data.text}
+
+        </div>
       `
-      : ''}
 
-      <br>
-
-      <small>
-        ${date.toLocaleString()}
-      </small>
-
-      <br><br>
-
-      ${data.text}
-
-    </div>
-  `
-
-  number++
-})
-```
-
-}
-
-document
-.getElementById(
-'createThread'
-)
-.addEventListener(
-'click',
-async () => {
-
-```
-  const title =
-    document.getElementById(
-      'threadTitle'
-    ).value
-
-  if (!title) {
-    alert(
-      'タイトルを入力してください'
-    )
-    return
+      number++
+    })
   }
 
-  await addDoc(
-    collection(
-      db,
-      'threads'
-    ),
-    {
-      title,
-      createdAt:
-        Date.now()
-    }
-  )
-
-  document.getElementById(
-    'threadTitle'
-  ).value = ''
-
-  await loadThreads()
-
-  alert('保存しました')
-})
-```
-
-document
-.getElementById(
-'sendResponse'
-)
-.addEventListener(
-'click',
-async () => {
-
-```
-  if (!currentThreadId) {
-    alert(
-      'スレッドを選択してください'
+  document
+    .getElementById(
+      'createThread'
     )
-    return
-  }
+    .addEventListener(
+      'click',
+      async () => {
 
-  const text =
-    document.getElementById(
-      'responseText'
-    ).value
+        const title =
+          document.getElementById(
+            'threadTitle'
+          ).value
 
-  if (!text) {
-    alert(
-      'レスを入力してください'
+        if (!title) {
+          alert(
+            'タイトルを入力してください'
+          )
+          return
+        }
+
+        await addDoc(
+          collection(
+            db,
+            'threads'
+          ),
+          {
+            title,
+            createdAt:
+              Date.now()
+          }
+        )
+
+        document.getElementById(
+          'threadTitle'
+        ).value = ''
+
+        await loadThreads()
+
+        alert('保存しました')
+      })
+
+  document
+    .getElementById(
+      'sendResponse'
     )
-    return
-  }
+    .addEventListener(
+      'click',
+      async () => {
 
-  await addDoc(
-    collection(
-      db,
-      'responses'
-    ),
-    {
-      threadId:
-        currentThreadId,
-      name: '名無し',
-      text,
-      createdAt:
-        Date.now()
-    }
-  )
+        if (!currentThreadId) {
 
-  document.getElementById(
-    'responseText'
-  ).value = ''
+          alert(
+            'スレッドを選択してください'
+          )
 
-  await loadResponses()
-})
-```
+          return
+        }
 
-window.deleteResponse =
-async function(id){
+        const text =
+          document.getElementById(
+            'responseText'
+          ).value
 
-```
-if(
-  !confirm(
-    'レスを削除しますか？'
-  )
-){
-  return
-}
+        if (!text) {
 
-await deleteDoc(
-  doc(
-    db,
-    'responses',
-    id
-  )
-)
+          alert(
+            'レスを入力してください'
+          )
 
-loadResponses()
-```
+          return
+        }
 
-}
+        await addDoc(
+          collection(
+            db,
+            'responses'
+          ),
+          {
+            threadId:
+              currentThreadId,
+            name: '名無し',
+            text,
+            createdAt:
+              Date.now()
+          }
+        )
 
-window.deleteThread =
-async function(id){
+        document.getElementById(
+          'responseText'
+        ).value = ''
 
-```
-if(
-  !confirm(
-    'スレッドを削除しますか？'
-  )
-){
-  return
-}
+        await loadResponses()
+      })
 
-await deleteDoc(
-  doc(
-    db,
-    'threads',
-    id
-  )
-)
-
-currentThreadId = null
-
-document.getElementById(
-  'selectedThread'
-).textContent =
-  'スレッドを選択してください'
-
-document.getElementById(
-  'responses'
-).innerHTML = ''
-
-loadThreads()
-```
-
-}
-
-loadThreads()
+  loadThreads()
 }
