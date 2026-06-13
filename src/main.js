@@ -368,6 +368,8 @@ function setupBBS() {
   window.deleteThread =
 async function(id){
 
+  console.log("削除開始", id)
+  
   if(
     !confirm(
       'スレッドを削除しますか？'
