@@ -256,14 +256,17 @@ ${currentThreadTitle}
 
 
   document
-    .getElementById(
-      'backButton'
-    )
-    .onclick = () => {
+  .getElementById(
+    'backButton'
+  )
+  .onclick = () => {
 
-      renderBBS()
-      setupBBS()
-    }
+    currentThreadId = null
+    currentThreadTitle = ''
+
+    renderBBS()
+    setupBBS()
+  }
 
   document
     .getElementById(
