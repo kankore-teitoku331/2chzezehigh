@@ -19,6 +19,8 @@ let isAdmin = false
 
 let currentThreadId = null
 
+let currentThreadTitle = ''
+
 document.querySelector('#app').innerHTML = `
 <div id="loginArea">
 
@@ -191,18 +193,96 @@ function setupBBS() {
   }
 `
 
-      div.onclick = () => {
+div.onclick = () => {
 
-        currentThreadId =
-          threadDoc.id
+  currentThreadId =
+    threadDoc.id
+
+  currentThreadTitle =
+    data.title
+
+  renderThreadPage()
+
+  loadResponses()
+
+  function renderThreadPage() {
+
+  document.getElementById(
+    'bbsArea'
+  ).innerHTML = `
+
+<button id="backButton">
+← 戻る
+</button>
+
+<h2>
+${currentThreadTitle}
+</h2>
+
+<input
+  id="responseText"
+  placeholder="レスを書く"
+>
+
+<button id="sendResponse">
+レス投稿
+</button>
+
+<hr>
+
+<div id="responses"></div>
+`
+
+  document
+    .getElementById(
+      'backButton'
+    )
+    .onclick = () => {
+
+      renderBBS()
+      setupBBS()
+    }
+
+  document
+    .getElementById(
+      'sendResponse'
+    )
+    .addEventListener(
+      'click',
+      async () => {
+
+        const text =
+          document.getElementById(
+            'responseText'
+          ).value
+
+        if (!text) {
+          return
+        }
+
+        await addDoc(
+          collection(
+            db,
+            'responses'
+          ),
+          {
+            threadId:
+              currentThreadId,
+            name: '名無し',
+            text,
+            createdAt:
+              Date.now()
+          }
+        )
 
         document.getElementById(
-          'selectedThread'
-        ).textContent =
-          data.title
+          'responseText'
+        ).value = ''
 
         loadResponses()
-      }
+      })
+}
+}
 
       threadList.appendChild(div)
     })
