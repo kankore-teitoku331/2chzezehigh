@@ -340,30 +340,45 @@ ${currentThreadTitle}
           data.createdAt
         )
 
-      responses.innerHTML += `
-        <div style="
-          border-bottom:1px solid #ccc;
-          padding:8px;
-        ">
+responses.innerHTML += `
+<div style="
+  border-bottom:1px solid #ccc;
+  padding:8px;
+">
 
-          <b>
-            ${number}
-            名前：
-            ${data.name || '名無し'}
-          </b>
+  <b>
+    ${number}
+    名前：
+    ${data.name || '名無し'}
+  </b>
 
-          <br>
-
-          <small>
-            ${date.toLocaleString()}
-          </small>
-
-          <br><br>
-
-          ${data.text}
-
-        </div>
+  ${
+    isAdmin
+      ? `
+      <button
+        style="float:right"
+        onclick="
+          deleteResponse('${responseDoc.id}')
+        "
+      >
+        削除
+      </button>
       `
+      : ''
+  }
+
+  <br>
+
+  <small>
+    ${date.toLocaleString()}
+  </small>
+
+  <br><br>
+
+  ${data.text}
+
+</div>
+`      
 
       number++
     })
@@ -462,6 +477,37 @@ ${currentThreadTitle}
 
         await loadResponses()
       })
+
+      window.deleteResponse =
+async function(id){
+
+  const ok = confirm(
+    'このレスを削除しますか？'
+  )
+
+  if(!ok){
+    return
+  }
+
+  try{
+
+    await deleteDoc(
+      doc(
+        db,
+        'responses',
+        id
+      )
+    )
+
+    loadResponses()
+
+  }catch(error){
+
+    console.error(error)
+
+    alert(error.message)
+  }
+}
 
  window.deleteThread =
 async function(id){
