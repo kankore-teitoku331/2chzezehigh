@@ -365,29 +365,35 @@ function setupBBS() {
         await loadResponses()
       })
 
-  window.deleteThread =
+ window.deleteThread =
 async function(id){
 
   console.log("削除開始", id)
-  
-  if(
-    !confirm(
-      'スレッドを削除しますか？'
-    )
-  ){
-    return
-  }
 
-  await deleteDoc(
-    doc(
-      db,
-      'threads',
-      id
+  try {
+
+    await deleteDoc(
+      doc(
+        db,
+        'threads',
+        id
+      )
     )
-  )
+
+    console.log("削除完了")
+
+    loadThreads()
+
+  } catch(error) {
+
+    console.error(error)
+
+    alert(
+      error.message
+    )
+  }
+}
 
   loadThreads()
 }
 
-loadThreads()
-}
