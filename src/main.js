@@ -412,7 +412,7 @@ responses.innerHTML += `
         alert('保存しました')
       })
 
-      })
+      
 
       window.deleteResponse =
 async function(id){
