@@ -118,31 +118,6 @@ margin-bottom:10px;
 
 <hr>
 
-<h2>選択中スレッド</h2>
-
-<div id="selectedThread">
-スレッドを選択してください
-</div>
-
-<br>
-
-<textarea
-  id="responseText"
-  placeholder="レスを書く"
-  rows="5"
-  style="
-    width:100%;
-    box-sizing:border-box;
-  "
-></textarea>
-
-<button id="sendResponse">
-レス投稿
-</button>
-
-<hr>
-
-<div id="responses"></div>
 `
 }
 
@@ -437,57 +412,6 @@ responses.innerHTML += `
         alert('保存しました')
       })
 
-  document
-    .getElementById(
-      'sendResponse'
-    )
-    .addEventListener(
-      'click',
-      async () => {
-
-        if (!currentThreadId) {
-
-          alert(
-            'スレッドを選択してください'
-          )
-
-          return
-        }
-
-        const text =
-          document.getElementById(
-            'responseText'
-          ).value
-
-        if (!text) {
-
-          alert(
-            'レスを入力してください'
-          )
-
-          return
-        }
-
-        await addDoc(
-          collection(
-            db,
-            'responses'
-          ),
-          {
-            threadId:
-              currentThreadId,
-            name: '名無し',
-            text,
-            createdAt:
-              Date.now()
-          }
-        )
-
-        document.getElementById(
-          'responseText'
-        ).value = ''
-
-        await loadResponses()
       })
 
       window.deleteResponse =
