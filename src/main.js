@@ -208,14 +208,20 @@ div.onclick = () => {
   function renderThreadPage() {
 
   document.getElementById(
-    'bbsArea'
-  ).innerHTML = `
+  'bbsArea'
+).innerHTML = `
+
+<div style="
+margin-top:40px;
+">
 
 <button id="backButton">
 ← 戻る
 </button>
 
-<h2>
+<h2 style="
+margin-top:20px;
+">
 ${currentThreadTitle}
 </h2>
 
@@ -231,7 +237,11 @@ ${currentThreadTitle}
 <hr>
 
 <div id="responses"></div>
+
+</div>
 `
+
+
 
   document
     .getElementById(
