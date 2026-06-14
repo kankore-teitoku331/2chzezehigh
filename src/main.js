@@ -178,14 +178,17 @@ function setupBBS() {
       div.style.cursor =
         'pointer'
 
-     div.innerHTML = `
+ div.innerHTML = `
   ${data.title}
 
   ${
     isAdmin
       ? `<button
           style="float:right"
-          onclick="deleteThread('${threadDoc.id}')"
+          onclick="
+            event.stopPropagation();
+            deleteThread('${threadDoc.id}')
+          "
         >
           削除
         </button>`
@@ -463,6 +466,13 @@ ${currentThreadTitle}
  window.deleteThread =
 async function(id){
 
+  const ok = confirm(
+  'このスレッドを削除しますか？'
+)
+
+if (!ok) {
+  return
+}
   console.log("削除開始", id)
 
   try {
