@@ -126,10 +126,15 @@ margin-bottom:10px;
 
 <br>
 
-<input
+<textarea
   id="responseText"
   placeholder="レスを書く"
->
+  rows="5"
+  style="
+    width:100%;
+    box-sizing:border-box;
+  "
+></textarea>
 
 <button id="sendResponse">
 レス投稿
@@ -208,7 +213,7 @@ div.onclick = () => {
 
   loadResponses()
 
-  function renderThreadPage() {
+  function  {
 
   document.getElementById(
   'bbsArea'
@@ -228,10 +233,7 @@ margin-top:20px;
 ${currentThreadTitle}
 </h2>
 
-<input
-  id="responseText"
-  placeholder="レスを書く"
->
+
 
 <button id="sendResponse">
 レス投稿
@@ -375,7 +377,7 @@ responses.innerHTML += `
 
   <br><br>
 
-  ${data.text}
+  ${data.text.replace(/\n/g, '<br>')}
 
 </div>
 `      
@@ -522,6 +524,29 @@ if (!ok) {
   console.log("削除開始", id)
 
   try {
+
+    const responseQuery = query(
+  collection(db,'responses'),
+  where(
+    'threadId',
+    '==',
+    id
+  )
+)
+
+const responseSnapshot =
+  await getDocs(responseQuery)
+
+for(const responseDoc of responseSnapshot.docs){
+
+  await deleteDoc(
+    doc(
+      db,
+      'responses',
+      responseDoc.id
+    )
+  )
+}
 
     await deleteDoc(
       doc(
