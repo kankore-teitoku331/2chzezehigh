@@ -87,7 +87,7 @@ function renderBBS() {
     'bbsArea'
   ).innerHTML = `
 
-<h1>2chzezehighschool</h1>
+<h1>Zch</h1>
 
 ${isAdmin
 ? `
@@ -213,7 +213,7 @@ div.onclick = () => {
 
   loadResponses()
 
-  function  {
+  function renderThreadPage() {
 
   document.getElementById(
   'bbsArea'
@@ -233,12 +233,19 @@ margin-top:20px;
 ${currentThreadTitle}
 </h2>
 
-
+<textarea
+  id="responseText"
+  placeholder="レスを書く"
+  rows="5"
+  style="
+    width:100%;
+    box-sizing:border-box;
+  "
+></textarea>
 
 <button id="sendResponse">
 レス投稿
 </button>
-
 <hr>
 
 <div id="responses"></div>
