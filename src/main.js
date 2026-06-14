@@ -176,12 +176,17 @@ function setupBBS() {
       div.style.cursor =
         'pointer'
 
-      div.innerHTML = `
+     div.innerHTML = `
   ${data.title}
 
   ${
     isAdmin
-      ? '<button style="float:right">削除</button>'
+      ? `<button
+          style="float:right"
+          onclick="deleteThread('${threadDoc.id}')"
+        >
+          削除
+        </button>`
       : ''
   }
 `
