@@ -6,16 +6,16 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   query,
   where,
   orderBy,
   deleteDoc,
   doc
 } from 'firebase/firestore'
-const USER_PASSWORD = 'kotimatu1212'
-const ADMIN_PASSWORD = 'kotimatu1212admin'
 
-let isAdmin = false
+const USER_PASSWORD = 'kotimatu1212'
+
 
 let currentThreadId = null
 
@@ -54,8 +54,7 @@ document
       ).value
 
     if (
-  input !== USER_PASSWORD &&
-  input !== ADMIN_PASSWORD
+  input !== USER_PASSWORD 
 ) {
 
   alert('パスワードが違います')
@@ -63,11 +62,7 @@ document
   return
 }
 
-if (
-  input === ADMIN_PASSWORD
-) {
-  isAdmin = true
-}
+
 
     document.getElementById(
       'loginArea'
@@ -87,19 +82,13 @@ function renderBBS() {
     'bbsArea'
   ).innerHTML = `
 
-<h1>Zch</h1>
-
-${isAdmin
-? `
-<div style="
-color:red;
-font-weight:bold;
-margin-bottom:10px;
-">
-管理者モード
+<div id="announcementArea">
+読み込み中...
 </div>
-`
-: ''}
+
+<hr>
+
+<h1>Zch</h1>
 
 <input
   id="threadTitle"
@@ -123,6 +112,31 @@ margin-bottom:10px;
 
 function setupBBS() {
 
+  async function loadAnnouncement(){
+
+  const noticeDoc =
+    await getDoc(
+      doc(
+        db,
+        'announcements',
+        'current'
+      )
+    )
+
+  if(!noticeDoc.exists()){
+    return
+  }
+
+  document.getElementById(
+    'announcementArea'
+  ).innerHTML = `
+  <div>
+    <b>管理者からのお知らせ</b>
+    <br><br>
+    ${noticeDoc.data().text}
+  </div>
+  `
+}
   async function loadThreads() {
 
     const q = query(
@@ -161,19 +175,7 @@ function setupBBS() {
  div.innerHTML = `
   ${data.title}
 
-  ${
-    isAdmin
-      ? `<button
-          style="float:right"
-          onclick="
-            event.stopPropagation();
-            deleteThread('${threadDoc.id}')
-          "
-        >
-          削除
-        </button>`
-      : ''
-  }
+  
 `
 
 div.onclick = () => {
@@ -339,20 +341,7 @@ responses.innerHTML += `
     ${data.name || '名無し'}
   </b>
 
-  ${
-    isAdmin
-      ? `
-      <button
-        style="float:right"
-        onclick="
-          deleteResponse('${responseDoc.id}')
-        "
-      >
-        削除
-      </button>
-      `
-      : ''
-  }
+  
 
   <br>
 
@@ -505,5 +494,6 @@ for(const responseDoc of responseSnapshot.docs){
 }
 
   loadThreads()
+  loadAnnouncement()
 }
 
